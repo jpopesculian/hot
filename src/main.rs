@@ -192,14 +192,18 @@ fn main() -> Result<()> {
         }
 
         events.clear();
-        poll.poll(&mut events, Some(Duration::from_secs(100)))?;
+        poll.poll(&mut events, Some(Duration::from_millis(100)))?;
         for event in events.iter() {
             match event.token() {
                 Process::STDERR => {
-                    pipe.transfer(process.stderr.as_mut().unwrap(), &mut stderr)?;
+                    if event.is_readable() {
+                        pipe.transfer(process.stderr.as_mut().unwrap(), &mut stderr)?;
+                    }
                 }
                 Process::STDOUT => {
-                    pipe.transfer(process.stdout.as_mut().unwrap(), &mut stdout)?;
+                    if event.is_readable() {
+                        pipe.transfer(process.stdout.as_mut().unwrap(), &mut stdout)?;
+                    }
                 }
                 _ => {}
             }
