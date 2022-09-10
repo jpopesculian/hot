@@ -5,7 +5,7 @@ use crossterm::{
 };
 use mio::{unix::SourceFd, Events, Interest, Poll, Registry, Token};
 use std::{
-    io::{self, Read, Result, Write},
+    io::{self, ErrorKind, Read, Result, Write},
     ops,
     os::unix::prelude::AsRawFd,
     panic,
@@ -191,8 +191,11 @@ fn main() -> Result<()> {
             process.register(poll.registry())?;
         }
 
-        events.clear();
-        poll.poll(&mut events, Some(Duration::from_millis(100)))?;
+        if let Err(err) = poll.poll(&mut events, Some(Duration::from_millis(100))) {
+            if err.kind() != ErrorKind::Interrupted {
+                return Err(err);
+            }
+        }
         for event in events.iter() {
             match event.token() {
                 Process::STDERR => {
@@ -208,6 +211,7 @@ fn main() -> Result<()> {
                 _ => {}
             }
         }
+        events.clear();
 
         if let Some(exit_status) = process.try_wait()? {
             std::process::exit(exit_status.code().unwrap_or(11));
