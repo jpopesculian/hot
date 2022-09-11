@@ -122,9 +122,20 @@ impl Process {
     fn spawn(cmd: &str, args: &[String]) -> Result<Self> {
         eprintln!(
             "{}",
-            Style::new()
-                .bold()
-                .paint(format!("{} {}", cmd, args.join(" ")))
+            Style::new().bold().paint(format!(
+                "{} {}",
+                cmd,
+                args.iter()
+                    .map(|arg| {
+                        if arg.contains(char::is_whitespace) {
+                            format!(r#""{}""#, arg.replace('"', r#"\""#))
+                        } else {
+                            arg.to_owned()
+                        }
+                    })
+                    .collect::<Vec<_>>()
+                    .join(" ")
+            ))
         );
         Ok(Self(
             Command::new(cmd)
