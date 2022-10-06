@@ -1,7 +1,12 @@
 [package]
 name = "hot"
+description = "Unix command reloader"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+documentation = "https://github.com/jpopesculian/hot"
+homepage = "https://github.com/jpopesculian/hot"
+repository = "https://github.com/jpopesculian/hot"
 
 [dependencies]
 ansi_term = "0.12.1"
