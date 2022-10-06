@@ -1,5 +1,5 @@
 [package]
-name = "hot"
+name = "hot-cli"
 description = "Unix command reloader"
 version = "0.1.0"
 edition = "2021"
@@ -7,6 +7,10 @@ license = "MIT"
 documentation = "https://github.com/jpopesculian/hot"
 homepage = "https://github.com/jpopesculian/hot"
 repository = "https://github.com/jpopesculian/hot"
+
+[[bin]]
+name = "hot"
+path = "src/main.rs"
 
 [dependencies]
 ansi_term = "0.12.1"
